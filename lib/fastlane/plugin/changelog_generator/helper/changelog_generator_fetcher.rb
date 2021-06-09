@@ -32,15 +32,11 @@ module Fastlane
 
         # Fetch pull requests
         pull_requests = client.pull_requests(project, state: 'closed', base: base_branch)
-        
-        UI.important("Found #{pull_requests.size} prs")
 
         # Remove pull requests not merged
         pull_requests.reject! do |pr|
           pr.merged_at.nil?
         end
-        
-        UI.important("Found #{pull_requests.size} prs after merging it")
 
         # Sort by merged_at
         pull_requests.sort_by!(&:merged_at)
@@ -52,9 +48,6 @@ module Fastlane
         pull_requests.each do |pr|
           pr.label_ids = issues_map[pr.number].labels.map(&:id)
         end
-        
-        UI.important("Returning #{labels.size} labels")
-        UI.important("Returning #{pull_requests.size} prs")
 
         lane_context[SharedValues::GENERATE_CHANGELOG_GITHUB_LABELS] = labels
         lane_context[SharedValues::GENERATE_CHANGELOG_GITHUB_PULL_REQUESTS] = pull_requests
