@@ -22,14 +22,16 @@ module Fastlane
         project = params[:github_project]
         base_branch = params[:base_branch]
         access_token = params[:github_api_token]
+        
+        client = Octokit::Client.new(:access_token => access_token)
 
         issues_map = {}
-        Octokit.issues(project, state: 'closed', access_token: access_token).each do |issue|
+        client.issues(project, state: 'closed').each do |issue|
           issues_map[issue.number] = issue
         end
 
         # Fetch pull requests
-        pull_requests = Octokit.pull_requests(project, state: 'closed', base: base_branch, access_token: access_token)
+        pull_requests = client.pull_requests(project, state: 'closed', base: base_branch)
 
         # Remove pull requests not merged
         pull_requests.reject! do |pr|
