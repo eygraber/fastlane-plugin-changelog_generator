@@ -46,6 +46,7 @@ module Fastlane
 
         # Add labels to pull requests
         pull_requests.each do |pr|
+          UI.important "Adding labels to #{pr.number} for #{pr}"
           pr.label_ids = issues_map[pr.number].labels.map(&:id)
         end
 
