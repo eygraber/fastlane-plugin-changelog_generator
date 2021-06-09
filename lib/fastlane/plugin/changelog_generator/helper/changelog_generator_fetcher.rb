@@ -29,9 +29,13 @@ module Fastlane
         client.issues(project, state: 'closed').each do |issue|
           issues_map[issue.number] = issue
         end
+        
+        UI.important "Found issues #{issues_map}"
 
         # Fetch pull requests
         pull_requests = client.pull_requests(project, state: 'closed', base: base_branch)
+        
+        UI.important "Found prs #{pull_requests}"
 
         # Remove pull requests not merged
         pull_requests.reject! do |pr|
@@ -46,7 +50,6 @@ module Fastlane
 
         # Add labels to pull requests
         pull_requests.each do |pr|
-          UI.important "Adding labels to #{pr.number} for #{pr}"
           pr.label_ids = issues_map[pr.number].labels.map(&:id)
         end
 
